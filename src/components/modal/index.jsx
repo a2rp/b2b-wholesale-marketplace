@@ -5,7 +5,10 @@ import styles from "./styles.module.css";
 const Modal = ({ title, description, onClose, children, size = "medium" }) => {
   const dialogRef = useRef(null);
   const onCloseRef = useRef(onClose);
-  onCloseRef.current = onClose;
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
 
   useEffect(() => {
     const focusableSelector = "button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), a[href]";
