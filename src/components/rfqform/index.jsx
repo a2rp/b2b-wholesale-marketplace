@@ -30,7 +30,7 @@ const RfqForm = ({ products, suppliers, defaultProduct, onSubmit, onCancel }) =>
       title: title.trim(),
       supplierId,
       supplier: supplier.name,
-      products: product ? [{ productId: product.id, name: product.name, quantity: Number(quantity), unit: product.unit.replace("per ", "") + "s" }] : [{ productId: "", name: title.trim(), quantity: Number(quantity), unit: "units" }],
+      products: product ? [{ productId: product.id, name: product.name, quantity: Number(quantity), unit: product.unit.replace("per ", "") }] : [{ productId: "", name: title.trim(), quantity: Number(quantity), unit: "units" }],
       budget: Number(budget),
       due: new Date(due + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
       created: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
