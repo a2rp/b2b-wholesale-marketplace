@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FiArrowUpRight, FiCheck, FiFilter, FiHeart, FiPlus, FiSearch, FiSliders, FiStar, FiX } from "react-icons/fi";
-import { categories, formatMoney } from "../../data";
+import { categories, formatMoney, formatQuantity } from "../../data";
 import styles from "./styles.module.css";
 
 const Marketplace = ({ products, query, shortlist, onQueryChange, onToggleShortlist, onProduct, onRfq }) => {
@@ -52,7 +52,7 @@ const Marketplace = ({ products, query, shortlist, onQueryChange, onToggleShortl
             <button type="button" className={styles.supplier} onClick={() => onProduct(product)}><span className={styles.supplierDot}>{product.supplier.slice(0, 1)}</span>{product.supplier}<span className={styles.verified}><FiCheck /> Verified</span></button>
             <div className={styles.divider} />
             <div className={styles.pricing}><div><strong>{formatMoney(product.price)}</strong><span>{product.unit}</span></div><span className={styles.rating}><FiStar /> {product.rating}</span></div>
-            <div className={styles.moq}><span>Minimum order</span><strong>{product.moq.toLocaleString()} units</strong></div>
+            <div className={styles.moq}><span>Minimum order</span><strong>{formatQuantity(product.moq, product.unit)}</strong></div>
             <div className={styles.cardActions}><button type="button" onClick={() => onRfq(product)}><FiPlus /> Request quote</button><span>{product.lead}</span></div>
           </div>
           <span className={styles.cardIndex}>{String(index + 1).padStart(2, "0")}</span>
