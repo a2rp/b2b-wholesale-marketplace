@@ -3,23 +3,25 @@ import { FiArrowDownRight, FiArrowRight, FiArrowUpRight, FiBox, FiClock, FiFileT
 import { formatMoney } from "../../data";
 import styles from "./styles.module.css";
 
-const Overview = ({ products, rfqs, orders, onNewRfq, onProduct }) => {
-  const openQuotes = rfqs.filter((item) => item.status !== "Closed");
+const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) => {
+  const openQuotes = rfqs.filter((item) => item.status === "Awaiting quote");
+  const reviewQuotes = rfqs.filter((item) => item.status === "Under review");
+  const activeQuotes = rfqs.filter((item) => item.status !== "Ordered" && item.status !== "Declined");
   const activeOrders = orders.filter((item) => item.status !== "Delivered");
   const committed = orders.reduce((sum, item) => sum + item.total, 0);
   const featured = products.slice(0, 4);
   const stats = [
     { label: "Open purchase orders", value: activeOrders.length, note: `${orders.length} orders in this cycle`, Icon: FiShoppingBag, tone: "violet", direction: "up" },
-    { label: "Awaiting supplier quotes", value: openQuotes.length, note: "2 need your review", Icon: FiFileText, tone: "amber", direction: "down" },
+    { label: "Awaiting supplier quotes", value: openQuotes.length, note: reviewQuotes.length + " need your review", Icon: FiFileText, tone: "amber", direction: "down" },
     { label: "Committed this month", value: formatMoney(committed), note: "Across active orders", Icon: FiPackage, tone: "blue", direction: "up" },
-    { label: "Verified suppliers", value: "24", note: "Across 7 categories", Icon: FiTruck, tone: "green", direction: "up" },
+    { label: "Verified suppliers", value: suppliers.length, note: "Across " + new Set(products.map((product) => product.category)).size + " categories", Icon: FiTruck, tone: "green", direction: "up" },
   ];
 
   return (
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>MONDAY, OCTOBER 13, 2026 <i /></span>
+          <span className={styles.eyebrow}>TUESDAY, OCTOBER 13, 2026 <i /></span>
           <h1>Good morning, Morgan.</h1>
           <p>Your supply network is moving. Here is what needs your attention today.</p>
         </div>
@@ -61,7 +63,7 @@ const Overview = ({ products, rfqs, orders, onNewRfq, onProduct }) => {
               <span className={`${styles.quoteStatus} ${rfq.status === "Approved" ? styles.quoteReady : ""}`}>{rfq.status}</span>
             </article>)}
           </div>
-          <div className={styles.quoteFooter}><span><strong>{openQuotes.length}</strong> requests still open</span><Link to="/quotes">Review responses <FiArrowRight /></Link></div>
+          <div className={styles.quoteFooter}><span><strong>{activeQuotes.length}</strong> requests still open</span><Link to="/quotes">Review responses <FiArrowRight /></Link></div>
         </section>
       </div>
 
