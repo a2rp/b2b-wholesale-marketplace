@@ -37,3 +37,8 @@ export const initialOrders = [
 ];
 
 export const formatMoney = (amount) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(amount);
+export const formatQuantity = (amount, unit) => {
+  const label = unit.replace("per ", "");
+  const plural = label === "kg" || label.endsWith("s") ? label : label + "s";
+  return amount.toLocaleString() + " " + plural;
+};
