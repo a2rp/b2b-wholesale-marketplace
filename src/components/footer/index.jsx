@@ -11,7 +11,7 @@ const links = [
   { label: "YouTube", href: "https://www.youtube.com/@ashishranjan-ashz?sub_confirmation=1", detail: "youtube.com/@ashishranjan-ashz", Icon: FiYoutube },
   { label: "Email", href: "mailto:ash.ranjan09@gmail.com", detail: "ash.ranjan09@gmail.com", Icon: FiMail },
   { label: "Support", href: "https://a2rp-donation-page.netlify.app/", detail: "a2rp-donation-page.netlify.app", Icon: FiHeart },
-  { label: "Buy Me a Coffee", href: "https://buymeacoffee.com/ashishranjan", detail: "buymeacoffee.com/ashishranjan", Icon: FiCoffee },
+  { label: "Buy Me a Coffee", href: "https://www.buymeacoffee.com/a2rp", detail: "buymeacoffee.com/a2rp", Icon: FiCoffee },
   { label: "Patreon", href: "https://www.patreon.com/ashishranjan", detail: "patreon.com/ashishranjan", Icon: FiHeart },
   { label: "Source code", href: "https://github.com/a2rp/b2b-wholesale-marketplace", detail: "github.com/a2rp/b2b-wholesale-marketplace", Icon: FiGithub },
 ];
