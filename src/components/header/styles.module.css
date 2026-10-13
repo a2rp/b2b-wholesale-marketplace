@@ -51,7 +51,7 @@
       display: block;
       margin-top: 7px;
       color: #9ca6c1;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
       letter-spacing: 1.15px;
     }
@@ -243,7 +243,7 @@
       color: #70788a;
       background: #fff;
       font-family: inherit;
-      font-size: 12px;
+      font-size: 13px;
       white-space: nowrap;
     }
   }
@@ -298,7 +298,7 @@
     border-radius: 6px;
     color: var(--color-primary-dark);
     background: #eeedff;
-    font-size: 12px;
+    font-size: 13px;
   }
 
   .newRfqButton {
