@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" fill="none">
+  <defs><linearGradient id="bg" x1="20" y1="12" x2="370" y2="286" gradientUnits="userSpaceOnUse"><stop stop-color="#EEE9DC"/><stop offset="1" stop-color="#D9D0BD"/></linearGradient><linearGradient id="paper" x1="132" y1="69" x2="286" y2="233" gradientUnits="userSpaceOnUse"><stop stop-color="#D8B98A"/><stop offset="1" stop-color="#A77D4D"/></linearGradient></defs>
+  <rect width="420" height="300" rx="24" fill="url(#bg)"/><circle cx="341" cy="57" r="46" fill="#F9F6ED" opacity=".65"/><ellipse cx="216" cy="238" rx="124" ry="20" fill="#7D674C" opacity=".16"/>
+  <path d="m115 106 99-48 100 49-99 48-100-49Z" fill="#F0D8AE"/><path d="m115 106 100 49v94l-100-50v-93Z" fill="url(#paper)"/><path d="m215 155 99-48v93l-99 49v-94Z" fill="#B48B5A"/><path d="m141 104 74-36 73 37-73 36-74-37Z" fill="#E7CAA0"/><path d="m158 162 37 18v46l-37-19v-45Z" fill="#D1AD7B"/><path d="m231 178 54-26v21l-54 27v-22Z" fill="#765538" opacity=".9"/><path d="m232 209 42-21v7l-42 21v-7Z" fill="#F4E9D3" opacity=".8"/><path d="m123 105 92 45 91-45" stroke="#8C6B46" stroke-width="3" opacity=".55"/>
+  <text x="25" y="265" fill="#6D5B43" font-family="Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2">RECYCLED PACKAGING</text>
+</svg>
