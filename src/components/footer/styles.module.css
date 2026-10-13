@@ -1,0 +1,127 @@
+.footer {
+  min-height: 76px;
+  padding: 16px 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid var(--color-line);
+  background: #fff;
+
+  .copyright {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    color: #737b90;
+    font-size: 13px;
+
+    > a {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--color-line);
+      border-radius: 10px;
+      background: #fff;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+
+      &:hover,
+      &:focus-visible {
+        border-color: #a5a1ed;
+        box-shadow: 0 0 0 3px rgb(93 85 223 / 10%);
+      }
+    }
+
+    img {
+      width: 26px;
+      height: 26px;
+      object-fit: contain;
+    }
+
+    p {
+      white-space: nowrap;
+    }
+
+    .name {
+      padding-inline: 4px;
+      color: var(--color-text);
+      font-weight: 700;
+      text-decoration: none;
+    }
+
+    a {
+      text-decoration: none;
+
+      &:hover,
+      &:focus,
+      &:active,
+      &:visited {
+        text-decoration: none;
+      }
+    }
+  }
+
+  .links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+
+    a {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      border: 1px solid transparent;
+      border-radius: 10px;
+      color: #737b90;
+      text-decoration: none;
+      transition: border-color 160ms ease, color 160ms ease, box-shadow 160ms ease, background-color 160ms ease;
+
+      &:hover,
+      &:focus,
+      &:active,
+      &:visited {
+        text-decoration: none;
+      }
+
+      &:hover,
+      &:focus-visible {
+        border-color: #e2e1fb;
+        color: var(--color-primary-dark);
+        background: #f7f6ff;
+        box-shadow: 0 0 0 2px rgb(93 85 223 / 8%);
+      }
+
+      svg {
+        font-size: 17px;
+      }
+    }
+  }
+
+  .tooltip {
+    z-index: 80;
+    max-width: 280px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    color: #fff;
+    background: #20263a;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-line;
+  }
+}
+
+@media (max-width: 760px) {
+  .footer {
+    padding: 18px 16px;
+    align-items: flex-start;
+    flex-direction: column;
+
+    .links {
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  }
+}
