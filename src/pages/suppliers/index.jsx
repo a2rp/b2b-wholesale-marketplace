@@ -40,10 +40,10 @@ const Suppliers = ({ suppliers, followed, onToggleFollow, onViewSupplier, onBrow
         <div className={styles.supplierIdentity}><span className={styles.avatar + " " + styles[supplier.color]}>{supplier.initials}</span><div><h3>{supplier.name}</h3><span className={styles.verifiedTag}><FiShield /> Verified supplier</span></div><span className={styles.rating}><FiStar /> {supplier.rating}</span></div>
         <p className={styles.specialty}>{supplier.specialty}</p>
         <span className={styles.location}><FiMapPin /> {supplier.location}</span>
-        <div className={styles.metrics}><span><strong>{supplier.years} yrs</strong><small>in business</small></span><i /><span><strong>{supplier.products}</strong><small>catalog items</small></span><i /><span><strong>{supplier.onTime.split(\" \")[0]}</strong><small>on-time</small></span></div>
-        <div className={styles.response}><span><FiMessageCircle /> Response time</span><strong>{supplier.response.replace(\"Usually replies in \", \"\").replace(\"Usually replies \", \"\")}</strong></div>
+        <div className={styles.metrics}><span><strong>{supplier.years} yrs</strong><small>in business</small></span><i /><span><strong>{supplier.products}</strong><small>catalog items</small></span><i /><span><strong>{supplier.onTime.split(" ")[0]}</strong><small>on-time</small></span></div>
+        <div className={styles.response}><span><FiMessageCircle /> Response time</span><strong>{supplier.response.replace("Usually replies in ", "").replace("Usually replies ", "")}</strong></div>
         <div className={styles.cardActions}><button type="button" onClick={() => onViewSupplier(supplier)}>View profile <FiArrowRight /></button><button type="button" onClick={() => onBrowseSupplier(supplier)}><FiPackage /> Browse catalog</button></div>
-      </article>)}</section> : <div className={styles.empty}><span><FiUsers /></span><strong>No suppliers found</strong><p>Try another supplier, location, or specialty.</p><button type="button" onClick={() => { setQuery(\"\"); setVerifiedOnly(false); }}>Clear filters</button></div>}
+      </article>)}</section> : <div className={styles.empty}><span><FiUsers /></span><strong>No suppliers found</strong><p>Try another supplier, location, or specialty.</p><button type="button" onClick={() => { setQuery(""); setVerifiedOnly(false); }}>Clear filters</button></div>}
 
       <aside className={styles.networkNote}><span className={styles.noteIcon}><FiShield /></span><div><strong>Supplier information is ready for your review</strong><small>Profiles and performance notes are sample workspace data. Reach out to verify current terms before ordering.</small></div><span className={styles.noteCount}>{suppliers.length} profiles</span></aside>
     </div>
