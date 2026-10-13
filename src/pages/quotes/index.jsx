@@ -3,7 +3,7 @@ import { FiArrowRight, FiCalendar, FiCheck, FiChevronDown, FiClock, FiFileText, 
 import { formatMoney } from "../../data";
 import styles from "./styles.module.css";
 
-const statuses = ["All requests", "Awaiting quote", "Under review", "Approved", "Declined"];
+const statuses = ["All requests", "Awaiting quote", "Under review", "Approved", "Ordered", "Declined"];
 
 const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onDeleteRfq, onCreateOrder }) => {
   const [filter, setFilter] = useState("All requests");
@@ -40,11 +40,11 @@ const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onDeleteRfq, onCreateO
           <div className={styles.budgetCell}><small>Target budget</small><strong>{formatMoney(rfq.budget)}</strong></div>
           <div className={styles.statusCell}><span className={styles.status + " " + styles["status" + rfq.status.replaceAll(" ", "")]}><i />{rfq.status}</span></div>
           <div className={styles.rowActions}>
-            {rfq.status === "Approved" ? <button className={styles.convertButton} type="button" onClick={() => onCreateOrder(rfq)}>Create PO <FiArrowRight /></button> : <button className={styles.reviewButton} type="button" onClick={() => onUpdateRfq(rfq.id, nextStatus(rfq.status))}>{rfq.status === "Awaiting quote" ? "Review" : "Approve"} <FiArrowRight /></button>}
+            {rfq.status === "Approved" ? <button className={styles.convertButton} type="button" onClick={() => onCreateOrder(rfq)}>Create PO <FiArrowRight /></button> : rfq.status === "Ordered" ? <span className={styles.orderedPill}><FiCheck /> PO created</span> : <button className={styles.reviewButton} type="button" onClick={() => onUpdateRfq(rfq.id, nextStatus(rfq.status))}>{rfq.status === "Awaiting quote" ? "Review" : "Approve"} <FiArrowRight /></button>}
             <button type="button" className={styles.moreButton} aria-label={"More actions for " + rfq.id} aria-expanded={menuId === rfq.id} onClick={() => setMenuId(menuId === rfq.id ? null : rfq.id)}><FiMoreHorizontal /></button>
             {menuId === rfq.id && <div className={styles.menu}>
               <button type="button" onClick={() => { onViewRfq(rfq); setMenuId(null); }}>View request details</button>
-              <label>Change status <select value={rfq.status} onChange={(event) => { onUpdateRfq(rfq.id, event.target.value); setMenuId(null); }}><option>Awaiting quote</option><option>Under review</option><option>Approved</option><option>Declined</option></select><FiChevronDown /></label>
+              <label>Change status <select disabled={rfq.status === "Ordered"} value={rfq.status} onChange={(event) => { onUpdateRfq(rfq.id, event.target.value); setMenuId(null); }}><option>Awaiting quote</option><option>Under review</option><option>Approved</option><option>Ordered</option><option>Declined</option></select><FiChevronDown /></label>
               <button type="button" className={styles.deleteAction} onClick={() => { onDeleteRfq(rfq); setMenuId(null); }}><FiTrash2 /> Remove request</button>
             </div>}
           </div>
