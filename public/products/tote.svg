@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 300" fill="none">
+  <defs><linearGradient id="bg" x1="22" y1="0" x2="410" y2="300" gradientUnits="userSpaceOnUse"><stop stop-color="#EFDDE4"/><stop offset="1" stop-color="#D4B8C5"/></linearGradient><linearGradient id="bag" x1="147" y1="83" x2="278" y2="246" gradientUnits="userSpaceOnUse"><stop stop-color="#D4B89D"/><stop offset="1" stop-color="#9B775D"/></linearGradient></defs>
+  <rect width="420" height="300" rx="24" fill="url(#bg)"/><circle cx="87" cy="78" r="48" fill="#FAF2F4" opacity=".55"/><ellipse cx="214" cy="246" rx="100" ry="15" fill="#725746" opacity=".16"/>
+  <path d="M145 111h138l-9 130H154l-9-130Z" fill="url(#bag)"/><path d="m177 114 3-38c2-21 13-32 34-32s32 11 34 32l3 38" stroke="#795B46" stroke-width="9" stroke-linecap="round"/><path d="M174 127h81v67h-81z" fill="#E8D6C7" opacity=".82"/><path d="M214 142c-11 15-8 34 0 45 10-11 13-30 0-45Z" fill="#698270"/><path d="M214 156c-14-6-25-3-29 8 11 4 22 1 29-8Z" fill="#879C7C"/><path d="M214 162c12-10 24-10 30-1-10 7-20 7-30 1Z" fill="#91A57E"/><path d="M215 145v44" stroke="#526D59" stroke-width="2"/>
+  <text x="25" y="265" fill="#74564F" font-family="Arial,sans-serif" font-size="13" font-weight="700" letter-spacing="2">RESPONSIBLE TEXTILES</text>
+</svg>
