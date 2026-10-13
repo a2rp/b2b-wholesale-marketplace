@@ -8,14 +8,21 @@ const dueDateDefault = () => {
   return date.toISOString().slice(0, 10);
 };
 
-const RfqForm = ({ products, suppliers, defaultProduct, onSubmit, onCancel }) => {
-  const [productId, setProductId] = useState(defaultProduct?.id || "");
-  const [supplierId, setSupplierId] = useState(defaultProduct?.supplierId || suppliers[0]?.id || "");
-  const [title, setTitle] = useState(defaultProduct ? defaultProduct.name + " volume pricing" : "");
-  const [quantity, setQuantity] = useState(defaultProduct?.moq || 1000);
-  const [budget, setBudget] = useState("");
-  const [due, setDue] = useState(dueDateDefault);
-  const [note, setNote] = useState("");
+const toDateInput = (value) => {
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return dueDateDefault();
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+};
+
+const RfqForm = ({ products, suppliers, defaultProduct, initialRfq, onSubmit, onCancel }) => {
+  const initialProduct = initialRfq?.products?.[0];
+  const [productId, setProductId] = useState(initialProduct?.productId || defaultProduct?.id || "");
+  const [supplierId, setSupplierId] = useState(initialRfq?.supplierId || defaultProduct?.supplierId || suppliers[0]?.id || "");
+  const [title, setTitle] = useState(initialRfq?.title || (defaultProduct ? defaultProduct.name + " volume pricing" : ""));
+  const [quantity, setQuantity] = useState(initialProduct?.quantity || defaultProduct?.moq || 1000);
+  const [budget, setBudget] = useState(initialRfq?.budget || "");
+  const [due, setDue] = useState(initialRfq ? toDateInput(initialRfq.due) : dueDateDefault);
+  const [note, setNote] = useState(initialRfq?.note || "");
   const [error, setError] = useState("");
 
   const submit = (event) => {
@@ -27,14 +34,15 @@ const RfqForm = ({ products, suppliers, defaultProduct, onSubmit, onCancel }) =>
       return;
     }
     onSubmit({
+      ...(initialRfq || {}),
       title: title.trim(),
       supplierId,
       supplier: supplier.name,
       products: product ? [{ productId: product.id, name: product.name, quantity: Number(quantity), unit: product.unit.replace("per ", "") }] : [{ productId: "", name: title.trim(), quantity: Number(quantity), unit: "units" }],
       budget: Number(budget),
       due: new Date(due + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      created: new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      status: "Awaiting quote",
+      created: initialRfq?.created || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      status: initialRfq?.status || "Awaiting quote",
       note: note.trim(),
     });
   };
@@ -54,7 +62,7 @@ const RfqForm = ({ products, suppliers, defaultProduct, onSubmit, onCancel }) =>
       <label>Response requested by<span className={styles.dateInput}><FiCalendar /><input type="date" required value={due} min={new Date().toISOString().slice(0, 10)} onChange={(event) => setDue(event.target.value)} /></span></label>
       <label>Notes for the supplier <span className={styles.optional}>OPTIONAL</span><textarea rows="3" maxLength="500" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add print specs, packaging preferences, or delivery details" /></label>
       {error && <p className={styles.error} role="alert">{error}</p>}
-      <div className={styles.actions}><button type="button" className={styles.cancel} onClick={onCancel}>Cancel</button><button type="submit" className={styles.submit}><FiSend /> Send request <FiCheck /></button></div>
+      <div className={styles.actions}><button type="button" className={styles.cancel} onClick={onCancel}>Cancel</button><button type="submit" className={styles.submit}><FiSend /> {initialRfq ? "Save changes" : "Send request"} <FiCheck /></button></div>
     </form>
   );
 };

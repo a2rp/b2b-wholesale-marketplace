@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 
 const statuses = ["All requests", "Awaiting quote", "Under review", "Approved", "Ordered", "Declined"];
 
-const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onDeleteRfq, onCreateOrder }) => {
+const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onEditRfq, onDeleteRfq, onCreateOrder }) => {
   const [filter, setFilter] = useState("All requests");
   const [query, setQuery] = useState("");
   const [menuId, setMenuId] = useState(null);
@@ -44,7 +44,8 @@ const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onDeleteRfq, onCreateO
             <button type="button" className={styles.moreButton} aria-label={"More actions for " + rfq.id} aria-expanded={menuId === rfq.id} onClick={() => setMenuId(menuId === rfq.id ? null : rfq.id)}><FiMoreHorizontal /></button>
             {menuId === rfq.id && <div className={styles.menu}>
               <button type="button" onClick={() => { onViewRfq(rfq); setMenuId(null); }}>View request details</button>
-              <label>Change status <select disabled={rfq.status === "Ordered"} value={rfq.status} onChange={(event) => { onUpdateRfq(rfq.id, event.target.value); setMenuId(null); }}><option>Awaiting quote</option><option>Under review</option><option>Approved</option><option>Ordered</option><option>Declined</option></select><FiChevronDown /></label>
+              {rfq.status === "Awaiting quote" || rfq.status === "Under review" ? <button type="button" onClick={() => { onEditRfq(rfq); setMenuId(null); }}>Edit request</button> : null}
+              <label>Change status <select disabled={rfq.status === "Ordered"} value={rfq.status} onChange={(event) => { onUpdateRfq(rfq.id, event.target.value); setMenuId(null); }}><option>Awaiting quote</option><option>Under review</option><option>Approved</option><option>Declined</option></select><FiChevronDown /></label>
               <button type="button" className={styles.deleteAction} onClick={() => { onDeleteRfq(rfq); setMenuId(null); }}><FiTrash2 /> Remove request</button>
             </div>}
           </div>

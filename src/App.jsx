@@ -62,6 +62,12 @@ const App = () => {
     navigate("/quotes");
   };
 
+  const updateRfqDetails = (details) => {
+    setRfqs((current) => current.map((rfq) => rfq.id === details.id ? { ...rfq, ...details } : rfq));
+    setModal(null);
+    notify("Your quote request was updated.");
+  };
+
   const updateRfq = (id, status) => {
     setRfqs((current) => current.map((rfq) => rfq.id === id ? { ...rfq, status } : rfq));
     notify("Request status updated to " + status + ".");
@@ -120,7 +126,7 @@ const App = () => {
               <Route path="/" element={<Navigate to="/overview" replace />} />
               <Route path="/overview" element={<Overview products={products} suppliers={suppliers} rfqs={rfqs} orders={orders} onNewRfq={() => startRfq()} onProduct={openProduct} />} />
               <Route path="/marketplace" element={<Marketplace products={products} query={searchQuery} shortlist={shortlist} onQueryChange={setSearchQuery} onToggleShortlist={toggleShortlist} onProduct={openProduct} onRfq={startRfq} />} />
-              <Route path="/quotes" element={<Quotes rfqs={rfqs} onNewRfq={() => startRfq()} onUpdateRfq={updateRfq} onViewRfq={(rfq) => setModal({ type: "rfq-details", rfq })} onDeleteRfq={askRemoveRfq} onCreateOrder={createOrder} />} />
+              <Route path="/quotes" element={<Quotes rfqs={rfqs} onNewRfq={() => startRfq()} onUpdateRfq={updateRfq} onViewRfq={(rfq) => setModal({ type: "rfq-details", rfq })} onEditRfq={(rfq) => setModal({ type: "edit-rfq", rfq })} onDeleteRfq={askRemoveRfq} onCreateOrder={createOrder} />} />
               <Route path="/orders" element={<Orders orders={orders} onUpdateOrder={updateOrder} onViewOrder={(order) => setModal({ type: "order", order })} onDeleteOrder={askRemoveOrder} />} />
               <Route path="/suppliers" element={<Suppliers suppliers={suppliers} followed={followed} onToggleFollow={toggleFollow} onViewSupplier={(supplier) => setModal({ type: "supplier", supplier })} onBrowseSupplier={browseSupplier} />} />
               <Route path="*" element={<Navigate to="/overview" replace />} />
@@ -131,6 +137,8 @@ const App = () => {
       </div>
 
       {modal?.type === "rfq" && <Modal title="Create a request for quotation" description="Share the details suppliers need to send you a useful quote." onClose={closeModal} size="large"><RfqForm products={products} suppliers={suppliers} defaultProduct={modal.product} onSubmit={createRfq} onCancel={closeModal} /></Modal>}
+
+      {modal?.type === "edit-rfq" && <Modal title="Edit quote request" description={"Update the details for " + modal.rfq.id + "."} onClose={closeModal} size="large"><RfqForm products={products} suppliers={suppliers} initialRfq={modal.rfq} onSubmit={updateRfqDetails} onCancel={closeModal} /></Modal>}
 
       {modal?.type === "product" && <Modal title={modal.product.name} description={modal.product.category + " · " + modal.product.supplier} onClose={closeModal} size="large">
         <div className={styles.productDetails}><img src={modal.product.image} alt="" /><div className={styles.detailCopy}><span className={styles.detailPill}><FiCheck /> {modal.product.tag}</span><p>{modal.product.detail}</p><div className={styles.detailPrice}><strong>{formatMoney(modal.product.price)}</strong><span>{modal.product.unit}</span></div><div className={styles.detailFacts}><span><small>Minimum order</small><strong>{formatQuantity(modal.product.moq, modal.product.unit)}</strong></span><span><small>Lead time</small><strong>{modal.product.lead}</strong></span><span><small>Supplier rating</small><strong><FiStar /> {modal.product.rating}</strong></span></div><div className={styles.detailSupplier}><span className={styles.supplierInitial}>{modal.product.supplier.slice(0, 1)}</span><span><strong>{modal.product.supplier}</strong><small><FiShield /> Verified supplier</small></span><button type="button" onClick={() => { const supplier = suppliers.find((item) => item.id === modal.product.supplierId); closeModal(); if (supplier) setModal({ type: "supplier", supplier }); }}>Supplier profile</button></div><div className={styles.detailActions}><button type="button" onClick={() => toggleShortlist(modal.product)}>{shortlist.includes(modal.product.id) ? "Remove from shortlist" : "Add to shortlist"}</button><button type="button" onClick={() => startRfq(modal.product)}>Request a quote <FiArrowRight /></button></div></div></div>
