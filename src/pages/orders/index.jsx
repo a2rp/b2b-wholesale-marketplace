@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FiArrowRight, FiBox, FiCheck, FiChevronDown, FiClock, FiDownload, FiMoreVertical, FiPackage, FiSearch, FiShield, FiTruck } from "react-icons/fi";
-import { formatMoney } from "../../data";
+import { formatDate, formatMoney } from "../../data";
 import styles from "./styles.module.css";
 
 const statusFlow = ["Processing", "Ready to ship", "In transit", "Delivered"];
@@ -17,6 +17,7 @@ const Orders = ({ orders, onUpdateOrder, onViewOrder, onDeleteOrder }) => {
   }), [orders, filter, query]);
   const totals = orders.reduce((sum, order) => sum + order.total, 0);
   const active = orders.filter((order) => order.status !== "Delivered").length;
+  const nextDelivery = orders.filter((order) => order.status !== "Delivered").sort((a, b) => a.eta.localeCompare(b.eta))[0];
 
   const advance = (order) => {
     const index = statusFlow.indexOf(order.status);
@@ -31,16 +32,21 @@ const Orders = ({ orders, onUpdateOrder, onViewOrder, onDeleteOrder }) => {
       </section>
 
       <div className={styles.summary}>
-        <div className={styles.activeBanner}><span className={styles.bannerIcon}><FiTruck /></span><div><strong>{active} orders are on their way</strong><small>Next expected delivery: October 17, 2026</small></div><span className={styles.bannerPill}><FiClock /> Tracking live</span></div>
+        <div className={styles.activeBanner}><span className={styles.bannerIcon}><FiTruck /></span><div><strong>{active} orders are on their way</strong><small>{nextDelivery ? "Next expected delivery: " + formatDate(nextDelivery.eta) : "No upcoming deliveries"}</small></div><span className={styles.bannerPill}><FiClock /> Tracking live</span></div>
         <button type="button" className={styles.exportButton} onClick={() => {
           const rows = [["PO", "Order", "Supplier", "Placed", "ETA", "Status", "Total"], ...orders.map((order) => [order.id, order.title, order.supplier, order.placed, order.eta, order.status, order.total])];
-          const csv = rows.map((row) => row.map((cell) => '"' + String(cell).replaceAll('"', '""') + '"').join(",")).join("\n");
+          const encodeCell = (value) => {
+            const text = String(value);
+            const safeText = /^[=+\-@]/.test(text.trimStart()) ? "'" + text : text;
+            return '"' + safeText.replaceAll('"', '""') + '"';
+          };
+          const csv = rows.map((row) => row.map(encodeCell).join(",")).join("\r\n");
           const url = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
           const anchor = document.createElement("a");
           anchor.href = url;
           anchor.download = "atlas-purchase-orders.csv";
           anchor.click();
-          URL.revokeObjectURL(url);
+          window.setTimeout(() => URL.revokeObjectURL(url), 1000);
         }}><FiDownload /> Export CSV</button>
       </div>
 
@@ -52,7 +58,7 @@ const Orders = ({ orders, onUpdateOrder, onViewOrder, onDeleteOrder }) => {
           return <article key={order.id} className={styles.order}>
             <button type="button" className={styles.orderIcon} onClick={() => onViewOrder(order)} aria-label={"View " + order.id}><FiPackage /></button>
             <div className={styles.orderMain}><button type="button" className={styles.orderTitle} onClick={() => onViewOrder(order)}>{order.title}</button><span>{order.id} <i /> {order.supplier}</span><div className={styles.progress} aria-label={"Delivery progress: " + order.status}>{statusFlow.map((step, index) => <span key={step} className={index <= stage ? styles.progressDone : ""} title={step}><i /></span>)}</div><small className={styles.progressLabel}>{stage < 0 ? order.status : statusFlow[Math.min(stage + 1, statusFlow.length - 1)] === order.status ? "Delivered to receiving" : "Next: " + statusFlow[stage + 1]}</small></div>
-            <div className={styles.eta}><small>EXPECTED ARRIVAL</small><strong>{order.eta}</strong><span><FiTruck /> {order.status}</span></div>
+            <div className={styles.eta}><small>EXPECTED ARRIVAL</small><strong>{formatDate(order.eta)}</strong><span><FiTruck /> {order.status}</span></div>
             <div className={styles.orderTotal}><small>ORDER TOTAL</small><strong>{formatMoney(order.total)}</strong><span>{order.items} line items</span></div>
             <div className={styles.actions}>{order.status !== "Delivered" ? <button type="button" className={styles.advance} onClick={() => advance(order)}>{order.status === "In transit" ? "Mark received" : "Advance status"} <FiArrowRight /></button> : <span className={styles.delivered}><FiCheck /> Received</span>}<button type="button" className={styles.more} aria-label={"Actions for " + order.id} aria-expanded={menuId === order.id} onClick={() => setMenuId(menuId === order.id ? null : order.id)}><FiMoreVertical /></button>{menuId === order.id && <div className={styles.menu}><button type="button" onClick={() => { onViewOrder(order); setMenuId(null); }}>View order details</button><label>Set status <select value={order.status} onChange={(event) => { onUpdateOrder(order.id, event.target.value); setMenuId(null); }}>{statusFlow.map((status) => <option key={status}>{status}</option>)}</select><FiChevronDown /></label><button type="button" className={styles.delete} onClick={() => { onDeleteOrder(order); setMenuId(null); }}>Cancel order</button></div>}</div>
           </article>;

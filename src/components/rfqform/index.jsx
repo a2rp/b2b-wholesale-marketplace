@@ -1,18 +1,9 @@
 import { useState } from "react";
 import { FiCalendar, FiCheck, FiFileText, FiPackage, FiSend } from "react-icons/fi";
+import { addDays, todayIso } from "../../data";
 import styles from "./styles.module.css";
 
-const dueDateDefault = () => {
-  const date = new Date();
-  date.setDate(date.getDate() + 14);
-  return date.toISOString().slice(0, 10);
-};
-
-const toDateInput = (value) => {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return dueDateDefault();
-  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
-};
+const dueDateDefault = () => addDays(14);
 
 const RfqForm = ({ products, suppliers, defaultProduct, initialRfq, onSubmit, onCancel }) => {
   const initialProduct = initialRfq?.products?.[0];
@@ -21,7 +12,7 @@ const RfqForm = ({ products, suppliers, defaultProduct, initialRfq, onSubmit, on
   const [title, setTitle] = useState(initialRfq?.title || (defaultProduct ? defaultProduct.name + " volume pricing" : ""));
   const [quantity, setQuantity] = useState(initialProduct?.quantity || defaultProduct?.moq || 1000);
   const [budget, setBudget] = useState(initialRfq?.budget || "");
-  const [due, setDue] = useState(initialRfq ? toDateInput(initialRfq.due) : dueDateDefault);
+  const [due, setDue] = useState(initialRfq?.due || dueDateDefault);
   const [note, setNote] = useState(initialRfq?.note || "");
   const [error, setError] = useState("");
 
@@ -40,8 +31,8 @@ const RfqForm = ({ products, suppliers, defaultProduct, initialRfq, onSubmit, on
       supplier: supplier.name,
       products: product ? [{ productId: product.id, name: product.name, quantity: Number(quantity), unit: product.unit.replace("per ", "") }] : [{ productId: "", name: title.trim(), quantity: Number(quantity), unit: "units" }],
       budget: Number(budget),
-      due: new Date(due + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
-      created: initialRfq?.created || new Date().toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+      due,
+      created: initialRfq?.created || todayIso(),
       status: initialRfq?.status || "Awaiting quote",
       note: note.trim(),
     });
@@ -59,7 +50,7 @@ const RfqForm = ({ products, suppliers, defaultProduct, initialRfq, onSubmit, on
         <label>Quantity<input type="number" required min="1" step="1" value={quantity} onChange={(event) => setQuantity(event.target.value)} /><small><FiPackage /> Include your expected order volume</small></label>
         <label>Target budget (USD)<input type="number" required min="1" step="0.01" value={budget} onChange={(event) => setBudget(event.target.value)} placeholder="e.g. 2500" /></label>
       </div>
-      <label>Response requested by<span className={styles.dateInput}><FiCalendar /><input type="date" required value={due} min={new Date().toISOString().slice(0, 10)} onChange={(event) => setDue(event.target.value)} /></span></label>
+      <label>Response requested by<span className={styles.dateInput}><FiCalendar /><input type="date" required value={due} min={todayIso()} onChange={(event) => setDue(event.target.value)} /></span></label>
       <label>Notes for the supplier <span className={styles.optional}>OPTIONAL</span><textarea rows="3" maxLength="500" value={note} onChange={(event) => setNote(event.target.value)} placeholder="Add print specs, packaging preferences, or delivery details" /></label>
       {error && <p className={styles.error} role="alert">{error}</p>}
       <div className={styles.actions}><button type="button" className={styles.cancel} onClick={onCancel}>Cancel</button><button type="submit" className={styles.submit}><FiSend /> {initialRfq ? "Save changes" : "Send request"} <FiCheck /></button></div>

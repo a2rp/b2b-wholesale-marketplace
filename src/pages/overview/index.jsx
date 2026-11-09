@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FiArrowDownRight, FiArrowRight, FiArrowUpRight, FiBox, FiClock, FiFileText, FiPackage, FiPlus, FiShoppingBag, FiTruck } from "react-icons/fi";
-import { formatMoney } from "../../data";
+import { daysUntil, formatDate, formatMoney, todayIso } from "../../data";
 import styles from "./styles.module.css";
 
 const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) => {
@@ -8,6 +8,8 @@ const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) =>
   const reviewQuotes = rfqs.filter((item) => item.status === "Under review");
   const activeQuotes = rfqs.filter((item) => item.status !== "Ordered" && item.status !== "Declined");
   const activeOrders = orders.filter((item) => item.status !== "Delivered");
+  const nextDelivery = [...activeOrders].sort((a, b) => a.eta.localeCompare(b.eta))[0];
+  const deliveryDays = nextDelivery ? daysUntil(nextDelivery.eta) : null;
   const committed = orders.reduce((sum, item) => sum + item.total, 0);
   const featured = products.slice(0, 4);
   const stats = [
@@ -21,7 +23,7 @@ const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) =>
     <div className={styles.page}>
       <section className={styles.hero}>
         <div className={styles.heroCopy}>
-          <span className={styles.eyebrow}>TUESDAY, OCTOBER 13, 2026 <i /></span>
+          <span className={styles.eyebrow}>{formatDate(todayIso(), { weekday: "long", month: "long", day: "numeric", year: "numeric" }).toUpperCase()} <i /></span>
           <h1>Good morning, Morgan.</h1>
           <p>Your supply network is moving. Here is what needs your attention today.</p>
         </div>
@@ -51,7 +53,7 @@ const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) =>
               <div className={styles.orderMeta}><strong>{formatMoney(order.total)}</strong><span className={styles[`status${order.status.replaceAll(" ", "")}`]}><i />{order.status}</span></div>
             </article>)}
           </div>
-          <div className={styles.deliveryNote}><span><FiClock /></span><p><strong>Next delivery window</strong><small>Paper Lane Co. · Wednesday, Oct 22</small></p><span className={styles.noteBadge}>2 days</span></div>
+          <div className={styles.deliveryNote}><span><FiClock /></span><p><strong>Next delivery window</strong><small>{nextDelivery ? nextDelivery.supplier + " | " + formatDate(nextDelivery.eta, { weekday: "long", month: "short", day: "numeric" }) : "No upcoming deliveries"}</small></p><span className={styles.noteBadge}>{deliveryDays === null ? "None" : deliveryDays === 0 ? "Today" : deliveryDays === 1 ? "Tomorrow" : deliveryDays + " days"}</span></div>
         </section>
 
         <section className={styles.panel}>
@@ -59,7 +61,7 @@ const Overview = ({ products, suppliers, rfqs, orders, onNewRfq, onProduct }) =>
           <div className={styles.quoteList}>
             {rfqs.slice(0, 3).map((rfq) => <article className={styles.quoteRow} key={rfq.id}>
               <span className={styles.quoteAvatar}>{rfq.supplier.split(" ").map((part) => part[0]).slice(0, 2).join("")}</span>
-              <div><strong>{rfq.title}</strong><small>{rfq.supplier} <i /> Due {rfq.due}</small></div>
+              <div><strong>{rfq.title}</strong><small>{rfq.supplier} <i /> Due {formatDate(rfq.due)}</small></div>
               <span className={`${styles.quoteStatus} ${rfq.status === "Approved" ? styles.quoteReady : ""}`}>{rfq.status}</span>
             </article>)}
           </div>

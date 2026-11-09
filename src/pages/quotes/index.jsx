@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FiArrowRight, FiCalendar, FiCheck, FiChevronDown, FiClock, FiFileText, FiMoreHorizontal, FiPlus, FiSearch, FiShield, FiTrash2 } from "react-icons/fi";
-import { formatMoney } from "../../data";
+import { formatDate, formatMoney } from "../../data";
 import styles from "./styles.module.css";
 
 const statuses = ["All requests", "Awaiting quote", "Under review", "Approved", "Ordered", "Declined"];
@@ -36,7 +36,7 @@ const Quotes = ({ rfqs, onNewRfq, onUpdateRfq, onViewRfq, onEditRfq, onDeleteRfq
         {filtered.length ? <div className={styles.list}>{filtered.map((rfq) => <article className={styles.row} key={rfq.id}>
           <div className={styles.requestIdentity}><span className={styles.requestIcon}><FiFileText /></span><div><div className={styles.requestTitle}><strong>{rfq.title}</strong><span>{rfq.id}</span></div><p>{rfq.products.map((product) => product.quantity.toLocaleString() + " " + product.unit + " " + product.name).join(" + ")}</p></div></div>
           <div className={styles.supplierCell}><span className={styles.supplierInitial}>{rfq.supplier.split(" ").map((part) => part[0]).slice(0, 2).join("")}</span><span><strong>{rfq.supplier}</strong><small><FiShield /> Verified supplier</small></span></div>
-          <div className={styles.dateCell}><small><FiCalendar /> RESPONSE DUE</small><strong>{rfq.due}</strong></div>
+          <div className={styles.dateCell}><small><FiCalendar /> RESPONSE DUE</small><strong>{formatDate(rfq.due)}</strong></div>
           <div className={styles.budgetCell}><small>Target budget</small><strong>{formatMoney(rfq.budget)}</strong></div>
           <div className={styles.statusCell}><span className={styles.status + " " + styles["status" + rfq.status.replaceAll(" ", "")]}><i />{rfq.status}</span></div>
           <div className={styles.rowActions}>

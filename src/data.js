@@ -1,5 +1,31 @@
 const asset = (name) => `${import.meta.env.BASE_URL}products/${name}`;
 
+const toDateKey = (date) => [date.getFullYear(), String(date.getMonth() + 1).padStart(2, "0"), String(date.getDate()).padStart(2, "0")].join("-");
+
+export const todayIso = () => toDateKey(new Date());
+
+export const addDays = (offset) => {
+  const date = new Date();
+  date.setHours(12, 0, 0, 0);
+  date.setDate(date.getDate() + offset);
+  return toDateKey(date);
+};
+
+export const formatDate = (value, options = { month: "short", day: "numeric", year: "numeric" }) => {
+  if (!value) return "";
+  const [year, month, day] = value.split("-").map(Number);
+  if (!year || !month || !day) return value;
+  return new Date(year, month - 1, day, 12).toLocaleDateString("en-US", options);
+};
+
+export const daysUntil = (value) => {
+  const dayNumber = (dateKey) => {
+    const [year, month, day] = dateKey.split("-").map(Number);
+    return Date.UTC(year, month - 1, day) / 86400000;
+  };
+  return dayNumber(value) - dayNumber(todayIso());
+};
+
 export const categories = ["All products", "Packaging", "Food & beverage", "Kitchen & home", "Textiles", "Household", "Office"];
 
 export const products = [
@@ -24,16 +50,16 @@ export const suppliers = [
 ];
 
 export const initialRfqs = [
-  { id: "RFQ-2084", title: "Holiday gift set packaging", buyer: "Morgan Ellis", supplierId: "sup-paper", supplier: "Paper Lane Co.", products: [{ productId: "sku-401", name: "Recycled kraft mailer", quantity: 8000, unit: "units" }], budget: 4800, created: "Oct 12, 2026", due: "Oct 24, 2026", status: "Awaiting quote", note: "Please include two-color logo printing." },
-  { id: "RFQ-2079", title: "Cafe opening essentials", buyer: "Morgan Ellis", supplierId: "sup-ridge", supplier: "Ridge Roasters", products: [{ productId: "sku-096", name: "Single-origin arabica", quantity: 120, unit: "kg" }], budget: 1800, created: "Oct 10, 2026", due: "Oct 18, 2026", status: "Under review", note: "Quote both 60 kg and 120 kg volume tiers." },
-  { id: "RFQ-2068", title: "Refill station launch", buyer: "Morgan Ellis", supplierId: "sup-clear", supplier: "ClearField Labs", products: [{ productId: "sku-187", name: "Plant-based surface wash", quantity: 1200, unit: "bottles" }], budget: 3200, created: "Oct 7, 2026", due: "Oct 20, 2026", status: "Approved", note: "Confirm recyclable cap availability." },
+  { id: "RFQ-2084", title: "Holiday gift set packaging", buyer: "Morgan Ellis", supplierId: "sup-paper", supplier: "Paper Lane Co.", products: [{ productId: "sku-401", name: "Recycled kraft mailer", quantity: 8000, unit: "units" }], budget: 4800, created: addDays(-2), due: addDays(6), status: "Awaiting quote", note: "Please include two-color logo printing." },
+  { id: "RFQ-2079", title: "Cafe opening essentials", buyer: "Morgan Ellis", supplierId: "sup-ridge", supplier: "Ridge Roasters", products: [{ productId: "sku-096", name: "Single-origin arabica", quantity: 120, unit: "kg" }], budget: 1800, created: addDays(-5), due: addDays(3), status: "Under review", note: "Quote both 60 kg and 120 kg volume tiers." },
+  { id: "RFQ-2068", title: "Refill station launch", buyer: "Morgan Ellis", supplierId: "sup-clear", supplier: "ClearField Labs", products: [{ productId: "sku-187", name: "Plant-based surface wash", quantity: 1200, unit: "bottles" }], budget: 3200, created: addDays(-9), due: addDays(8), status: "Approved", note: "Confirm recyclable cap availability." },
 ];
 
 export const initialOrders = [
-  { id: "PO-48120", supplierId: "sup-paper", supplier: "Paper Lane Co.", title: "Autumn mailer restock", items: 3, total: 6840, placed: "Oct 11, 2026", eta: "Oct 22, 2026", status: "Processing" },
-  { id: "PO-48114", supplierId: "sup-ridge", supplier: "Ridge Roasters", title: "Cafe opening essentials", items: 2, total: 1680, placed: "Oct 9, 2026", eta: "Oct 17, 2026", status: "Ready to ship" },
-  { id: "PO-48098", supplierId: "sup-thread", supplier: "Threadwell Studio", title: "Cotton tote sample run", items: 1, total: 2150, placed: "Oct 6, 2026", eta: "Oct 21, 2026", status: "In transit" },
-  { id: "PO-48071", supplierId: "sup-glass", supplier: "North Harbor Glass", title: "Amber bottle replenishment", items: 2, total: 4320, placed: "Oct 2, 2026", eta: "Oct 12, 2026", status: "Delivered" },
+  { id: "PO-48120", supplierId: "sup-paper", supplier: "Paper Lane Co.", title: "Autumn mailer restock", items: 3, total: 6840, placed: addDays(-4), eta: addDays(5), status: "Processing" },
+  { id: "PO-48114", supplierId: "sup-ridge", supplier: "Ridge Roasters", title: "Cafe opening essentials", items: 2, total: 1680, placed: addDays(-6), eta: addDays(2), status: "Ready to ship" },
+  { id: "PO-48098", supplierId: "sup-thread", supplier: "Threadwell Studio", title: "Cotton tote sample run", items: 1, total: 2150, placed: addDays(-8), eta: addDays(1), status: "In transit" },
+  { id: "PO-48071", supplierId: "sup-glass", supplier: "North Harbor Glass", title: "Amber bottle replenishment", items: 2, total: 4320, placed: addDays(-12), eta: addDays(-5), status: "Delivered" },
 ];
 
 export const formatMoney = (amount) => new Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 2 }).format(amount);
